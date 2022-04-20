@@ -1,0 +1,8 @@
+server:
+  port: 10000
+
+logging:
+  file:
+    path: /log/
+    name: auto.log
+
