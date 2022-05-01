@@ -45,6 +45,16 @@ public class AutoBean {
     }
 
     @Override
+    public String toString() {
+        return "AutoBean{" +
+                "sqid='" + sqid + '\'' +
+                ", cookie='" + cookie + '\'' +
+                ", seatid='" + seatid + '\'' +
+                ", enable=" + enable +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

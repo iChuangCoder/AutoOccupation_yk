@@ -6,3 +6,8 @@ logging:
     path: /log/
     name: auto.log
 
+spring:
+  mvc:
+    view:
+      prefix: /
+      suffix: .html

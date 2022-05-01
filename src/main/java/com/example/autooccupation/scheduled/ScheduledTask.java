@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.*;
 
@@ -27,9 +26,13 @@ public class ScheduledTask {
     private HashMap<String,AutoBean> tasks = new HashMap<>();
     private ScheduledThreadPoolExecutor refreshCookiePool = new ScheduledThreadPoolExecutor(10);
     private ScheduledThreadPoolExecutor grabAPool = new ScheduledThreadPoolExecutor(10);
-
+    private String cookie = "";
     @Autowired
     RestTemplate restTemplate;
+
+    public synchronized String getCookie() {
+        return cookie;
+    }
 
     // 刷新cookie 20m一次
     public synchronized String automaticSeat(AutoBean autoBean) {
@@ -73,6 +76,7 @@ public class ScheduledTask {
         grabAPool.shutdownNow();
         grabAPool = new ScheduledThreadPoolExecutor(10);
         tasks = new HashMap<>();
+        cookie = "";
         log.info("定时任务全部结束");
     }
 
@@ -127,9 +131,19 @@ public class ScheduledTask {
         return tasks;
     }
 
-    public synchronized void addTesk(AutoBean autoBean) {
-        tasks.remove(autoBean.getSqid());
+    public synchronized Result addTesk(AutoBean autoBean) {
+        if (cookie.equals("")) {
+            cookie = autoBean.getCookie();
+        }
         autoBean.setEnable(true);
+        for (AutoBean value : tasks.values()) {
+            if (value.getSeatid().equals(autoBean.getSeatid())) {
+                log.info(autoBean.getSeatid() + "座位已被选中。");
+                return Result.fail("座位已被选中。");
+            }
+        }
         tasks.put(autoBean.getSqid(),autoBean);
+        log.info(autoBean  + " : 添加成功。");
+        return Result.fail(autoBean.getSqid() +":添加成功。");
     }
 }

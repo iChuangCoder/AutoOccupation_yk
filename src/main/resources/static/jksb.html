@@ -7,9 +7,19 @@
     <script src="/js/jquery-3.2.1.min.js"></script>
 </head>
 <script>
+
     function sub(){
+
+        var userid = $("#userId").val()
+        var token = $("#token").val()
+
+        if (userid.length != 32 || token.length != 32) {
+            alert("提交失败，请检查参数。")
+            return false;
+        }
+
         $.ajax({
-            url:"/addtesk",
+            url:"/autojksb",
             method:"POST",
             data:$("#form").serialize(),
             success:(res) => {
@@ -19,81 +29,20 @@
         })
         return false;
     }
-    function ondb() {
-        var sqid = document.getElementById("sqid")
-        switch (sqid.value) {
-            case "lc":
-                sqid.value = "DC4100DCAFF3BFC3E0530C96CE0A9F53"
-                break
-            case "lkh":
-                sqid.value = "DC8735A52F5B3464E0530B96CE0A9E2B"
-                break
-            case "mz":
-                sqid.value = "CFFAA7E6B1D908DEE0530100007F9812"
-                break
-            case "ljl":
-                sqid.value = "DB90EA85F30A5C97E0530C96CE0A9ED4"
-                break
-            case "zlj":
-                sqid.value = "DC87CCAB8CAB3457E0530B96CE0ABDDC"
-                break
-            case "zch":
-                sqid.value = "DC817D93761E6D88E0530C96CE0A32E4"
-                break
-        }
-    }
-    function dbseat() {
-        var seatid = document.getElementById("seatid")
-        if (seatid.value == null || seatid.value == "") {
-            return false;
-        }
-        $.ajax({
-            url:"/getseat?seatId="+seatid.value,
-            method:"GET",
-            success:(res) => {
-                if (res.code == 400) {
-                    alert(res.msg)
-                } else {
-                    seatid.value = res.msg
-                }
-                return false;
-            }
-        })
-    }
-    function dbcookie() {
-        var cookie = document.getElementById("cookie")
 
-        $.ajax({
-            url:"/getcookie",
-            method:"GET",
-            success:(res) => {
-                if (res.code == 400) {
-                    alert(res.msg)
-                } else {
-                    cookie.value = res.msg
-                }
-                return false;
-            }
-        })
-    }
 </script>
 <body>
 <div class="row">
     <div class="signupFrm">
         <form onsubmit="return false"  id="form" class="form">
-            <p class="title">开 卷 <span class="title1">(rat race) </span> </p>
+            <p class="title">健康上报<span class="title1"></span> </p>
             <div class="inputContainer">
-                <input id="sqid" type="text" name="sqid" class="input" placeholder="a" ondblclick="ondb()">
-                <label class="label">ID</label>
+                <input id="userId" type="text" name="userId" class="input" placeholder="a">
+                <label class="label">UserId</label>
             </div>
             <div class="inputContainer">
-                <input id="cookie" type="text" name="cookie" class="input" placeholder="a" ondblclick="dbcookie()">
-                <label class="label">COOKIE</label>
-            </div>
-
-            <div class="inputContainer">
-                <input id="seatid" type="text" class="input" name="seatid" placeholder="a" ondblclick="dbseat()">
-                <label class="label">SEATID</label>
+                <input id="token" type="text" name="token" class="input" placeholder="a">
+                <label class="label">Token</label>
             </div>
             <button onclick="sub()" class="submitBtn" >提交</button>
         </form>
