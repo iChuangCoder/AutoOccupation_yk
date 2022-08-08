@@ -1,13 +1,29 @@
 server:
-  port: 10000
+  port: 8027
 
 logging:
   file:
     path: /log/
     name: auto.log
 
-spring:
-  mvc:
-    view:
-      prefix: /
-      suffix: .html
+file:
+  seatid: "/properties/seatid.properties"
+  matchName: "/properties/matchName.properties"
+
+task:
+  submit:
+    time: "21:10:35"  # 开始提交时间 开始小时:开始分钟:结束分钟
+  # 任务开始结束表达式
+  cron:
+    start: "00 35 21 * * ?"
+    end: "00 36 21 * * ?"
+    cookie: "00 00 9,21 * * ?"
+  poolSize: 10
+auth:
+  username: 202112001587
+  password: 963592390Li
+  count: 10
+login:
+  admin:
+    username: 123
+    password: 123

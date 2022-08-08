@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AutoOccupation_V1.5</title>
+    <link rel="stylesheet" href="/css/index.css">
+
+</head>
+
+<body>
+<div id="app1">
+    <div class="signupFrm">
+        <form onsubmit="return false" id="form" class="form">
+            <button id="but2" @click="goindex">
+                <span>锲而不舍，金石可镂</span>
+            </button>
+
+            <div class="inputContainer">
+                <input v-model:value="formdata.name" type="text" name="name" class="input" placeholder="a">
+                <label class="label">Name</label>
+            </div>
+            <div class="inputContainer">
+                <input v-model:value="formdata.sqid" type="text" name="sqid" class="input" placeholder="a">
+                <label class="label">ID</label>
+            </div>
+            <div class="inputContainer">
+                <input v-model:value="formdata.seatNum" type="text" class="input" name="seatNum" placeholder="a">
+                <label class="label">SeatNum</label>
+            </div>
+            <button @click="sub()" class="submitBtn cssbuttons-io-button"> Fighting！
+                <div class="icon">
+                    <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                              fill="currentColor"></path>
+                    </svg>
+                </div>
+            </button>
+        </form>
+    </div>
+</div>
+<canvas class="background"></canvas>
+<script src="js/vue.js"></script>
+<script src="js/aaxios.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.2/particles.min.js"></script>-->
+<script>
+    var app = new Vue({
+        el: '#app1',
+        data: {
+            formdata: {
+                name: "",
+                sqid: "",
+                seatNum: ""
+            }
+        },
+        methods: {
+            sub: function () {
+                $.ajax({
+                    url:"/addtask",
+                    method:"POST",
+                    data:$("#form").serialize(),
+                    success:(res) => {
+                        alert(res.msg)
+                        return false;
+                    }
+                })
+                return false;
+            },
+            goindex: function () {
+                window.location.href = "/"
+            }
+        }
+    })
+
+</script>
+</body>
+<style>
+
+</style>
+</html>

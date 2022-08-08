@@ -1,224 +1,106 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>AutoOccupation_V1.2</title>
+    <title>AutoOccupation_V1.5</title>
+    <script src="/js/vue.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="/js/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="/js/aaxios.js"></script>
+    <script src=""></script>
 </head>
-<script>
-    function sub(){
-        $.ajax({
-            url:"/addtesk",
-            method:"POST",
-            data:$("#form").serialize(),
-            success:(res) => {
-                alert(res.msg)
-                return false;
-            }
-        })
-        return false;
-    }
-    function ondb() {
-        var sqid = document.getElementById("sqid")
-        switch (sqid.value) {
-            case "lc":
-                sqid.value = "DC4100DCAFF3BFC3E0530C96CE0A9F53"
-                break
-            case "lkh":
-                sqid.value = "DC8735A52F5B3464E0530B96CE0A9E2B"
-                break
-            case "mz":
-                sqid.value = "CFFAA7E6B1D908DEE0530100007F9812"
-                break
-            case "ljl":
-                sqid.value = "DB90EA85F30A5C97E0530C96CE0A9ED4"
-                break
-            case "zlj":
-                sqid.value = "DC87CCAB8CAB3457E0530B96CE0ABDDC"
-                break
-            case "zch":
-                sqid.value = "DC817D93761E6D88E0530C96CE0A32E4"
-                break
-        }
-    }
-    function dbseat() {
-        var seatid = document.getElementById("seatid")
-        if (seatid.value == null || seatid.value == "") {
-            return false;
-        }
-        $.ajax({
-            url:"/getseat?seatId="+seatid.value,
-            method:"GET",
-            success:(res) => {
-                if (res.code == 400) {
-                    alert(res.msg)
-                } else {
-                    seatid.value = res.msg
-                }
-                return false;
-            }
-        })
-    }
-    function dbcookie() {
-        var cookie = document.getElementById("cookie")
-
-        $.ajax({
-            url:"/getcookie",
-            method:"GET",
-            success:(res) => {
-                if (res.code == 400) {
-                    alert(res.msg)
-                } else {
-                    cookie.value = res.msg
-                }
-                return false;
-            }
-        })
-    }
-</script>
 <body>
-<div class="row">
-    <div class="signupFrm">
-        <form onsubmit="return false"  id="form" class="form">
-            <p class="title">开 卷 <span class="title1">(rat race) </span> </p>
-            <div class="inputContainer">
-                <input id="sqid" type="text" name="sqid" class="input" placeholder="a" ondblclick="ondb()">
-                <label class="label">ID</label>
-            </div>
-            <div class="inputContainer">
-                <input id="cookie" type="text" name="cookie" class="input" placeholder="a" ondblclick="dbcookie()">
-                <label class="label">COOKIE</label>
-            </div>
-
-            <div class="inputContainer">
-                <input id="seatid" type="text" class="input" name="seatid" placeholder="a" ondblclick="dbseat()">
-                <label class="label">SEATID</label>
-            </div>
-            <button onclick="sub()" class="submitBtn" >提交</button>
-        </form>
+<div  style="margin: 30px"  id="app">
+    <div class="col-md-8">
+        <table class="table table-hover">
+            <tr class="info">
+                <th>#</th>
+                <th>姓名</th>
+                <th>ID</th>
+                <th>选中座位</th>
+                <th>是否开启</th>
+            </tr>
+            <tr :class="{danger:!user.enable,info:user.enable && user.seatNum}" v-for="(user,index) in users">
+                <td>{{index + 1}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.sqid.substring(0,5) + '...'}}</td>
+                <td>
+                    <input
+                            v-model:value="user.seatNum"
+                            @dblclick="setSeat(user)"
+                            placeholder="未选择" type="text" class="input" required="">
+                </td>
+                <td>
+                    <label class="rocker rocker-small">
+                        <input type="checkbox" @change="enableChange(user)" v-model:checked="user.enable">
+                        <span class="switch-left">Yes</span>
+                        <span class="switch-right">No</span>
+                    </label>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-3">
+        <dl>
+            <dt>消息</dt>
+            <dd  v-for="(msg,index) in message">
+                {{index+ "." + msg}}}
+            </dd>
+        </dl>
     </div>
 </div>
-</div>
+
 </body>
-<style>
-    /* 去掉所有默认边距/填充，设置字体 */
-    body {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        background-color: white;
-        font-family: "lato", sans-serif;
-    }
 
-
-    .signupFrm {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .form {
-        background-color: white;
-        width: 400px;
-        border-radius: 8px;
-        padding: 20px 40px;
-        box-shadow: 0 10px 25px rgba(92, 99, 105, .2);
-    }
-
-    .title {
-        font-size: 30px;
-        margin-bottom: 50px;
-        font-family: "lato", sans-serif;
-    }
-    .title1 {
-        font-family: Microsoft YaHei;
-        font-size: 20px;
-        margin-bottom: 50px;
-    }
-
-    .inputContainer {
-        position: relative;
-        height: 45px;
-        width: 90%;
-        margin-bottom: 17px;
-    }
-
-    /* 设置输入框的样式 */
-
-    .input {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        height: 100%;
-        width: 100%;
-        border: 1px solid #DADCE0;
-        border-radius: 7px;
-        font-size: 16px;
-        padding: 0 20px;
-        outline: none;
-        background: none;
-        z-index: 1;
-    }
-
-    /* 隐藏占位符文本（a）*/
-
-    ::placeholder {
-        color: transparent;
-    }
-
-    /* 设置文本标签的样式 */
-
-    .label {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        padding: 0 4px;
-        background-color: white;
-        color: #DADCE0;
-        font-size: 16px;
-        transition: 0.5s;
-        z-index: 0;
-    }
-
-    .submitBtn {
-        display: block;
-        margin-left: auto;
-        padding: 15px 30px;
-        border: none;
-        background-color: purple;
-        color: white;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-        margin-top: 30px;
-    }
-
-    .submitBtn:hover {
-        background-color: #9867C5;
-        transform: translateY(-2px);
-    }
-
-    .input:focus + .label {
-        top: -7px;
-        left: 3px;
-        z-index: 10;
-        font-size: 14px;
-        font-weight: 600;
-        color: purple;
-    }
-
-    .input:focus {
-        border: 2px solid purple;
-    }
-
-    .input:not(:placeholder-shown) + .label {
-        top: -7px;
-        left: 3px;
-        z-index: 10;
-        font-size: 14px;
-        font-weight: 600;
-    }
-</style>
+<script>
+    var app = new Vue({
+            el: '#app',
+        data: {
+            users: [],
+            message:[]
+        },
+        methods: {
+            setSeat: function (user) {
+                axios({
+                    method: 'post',
+                    url: '/setSeatId',
+                    data: user
+                }).then(res => {
+                    // _this.users = res.data.data
+                    if (res.data.code == 200) {
+                        // _this.users = res.data.data
+                        this.users = res.data.data
+                    }
+                    this.message.unshift(res.data.msg)
+                    if (this.message.length > 20) {
+                        this.message.remove()
+                    }
+                });
+            },
+            enableChange:function (user) {
+                axios({
+                    method: 'post',
+                    url: '/changeEnable',
+                    data: user
+                }).then(res => {
+                    // _this.users = res.data.data
+                    if (res.data.code == 200) {
+                        this.users = res.data.data
+                    }
+                    this.message.unshift(res.data.msg)
+                });
+            }
+        },
+        created: function () {
+            const _this = this
+            axios({
+                method: 'get',
+                url: '/admin',
+            }).then(res => {
+                _this.users = res.data.data
+            });
+        }
+    })
+</script>
 </html>

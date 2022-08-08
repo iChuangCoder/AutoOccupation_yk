@@ -18,6 +18,13 @@ public class Result {
         result.setMsg(msg);
         return  result;
     }
+    public static Result suss(Object data,String msg) {
+        Result result = new Result();
+        result.setCode(200);
+        result.setData(data);
+        result.setMsg(msg);
+        return  result;
+    }
 
     public static Result fail(String msg) {
         Result result = new Result();
